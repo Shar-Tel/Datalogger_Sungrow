@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<Planta Nombre='planta'>
+
+	<Inverter>
+		<Numero>1,2,3,4,5,6</Numero><!-- id MODBUS de los inversores -->
+		<IP>192.168.1.100</IP><!-- IP del inversor a conectar -->
+		<Puerto>502</Puerto>
+	</Inverter>	
+</Planta>
