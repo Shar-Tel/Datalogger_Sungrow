@@ -11,7 +11,6 @@ import select
 from datetime import datetime
 from Sungrow_smartlogger import Sungrow
 import configparser as ConfigParser 
-import select
 import termios
 import tty
 
@@ -43,7 +42,6 @@ UGD = "UGD"	  # Tensión Ugnd
 
 def convert_data(PAC,KDY,IL1,IL2,IL3,UL1,UL2,UL3,KMT,TKK,IDC,UCC,UGD,inverter):
 	"""Convierte los datos leídos del inversor Sungrow a un diccionario para enviar por MQTT"""
-	global planta
 	# metemos los datos en un diccionario
 	ev=[]
 	ev.insert(0,['Planta',planta])
@@ -70,7 +68,6 @@ def convert_data(PAC,KDY,IL1,IL2,IL3,UL1,UL2,UL3,KMT,TKK,IDC,UCC,UGD,inverter):
 	
 def convert_alarm(alarm,inverter):
 	"""Convierte la alarma leída del inversor Sungrow a un diccionario para enviar por MQTT"""
-	global planta,inverter_linea
 	# metemos los datos en un diccionario
 	ev=[]
 	ev.insert(0,['Planta',planta])
@@ -338,10 +335,10 @@ def main():
 								print(data)
 								#Guardo los datos en BD
 								guardaBD(json.dumps(data))
-							except:
-								pass
-						except:
-							pass
+							except Exception as e:
+								print("Error al guardar los datos en BD: "+str(e))
+						except Exception as e:
+							print("Error al leer los datos del inversor: "+str(e))
 						time.sleep(1)
 
 						#Pido alarmas	
@@ -354,7 +351,7 @@ def main():
 									try:
 										data = convert_alarm(int(result.value),inverter_numero)
 										print(data)
-										print("envio a mqtt inverter "+inverter_linea+"."+inverter_numero)
+										print("envio a mqtt inverter "+inverter_numero)
 										client.publish("General/alarmas",json.dumps(data),2)
 									except Exception as e: 
 										print(e)
